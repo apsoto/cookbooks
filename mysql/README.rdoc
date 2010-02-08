@@ -67,7 +67,7 @@ On Debian/Ubuntu this will preseed the MySQL package with the randomly generated
 
 Also sets up 'repl' user grants for replication slaves.
 
-On EC2 nodes,
+On EC2 nodes, in addition to the server recipe,
 
   include_recipe "mysql::server_ec2"
   
