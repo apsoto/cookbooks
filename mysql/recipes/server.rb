@@ -47,6 +47,14 @@ package "mysql-server" do
   action :install
 end
 
+# local change to increase the start timeout in the init.d script.
+# We hit the timeout both because of the large buffer cache we specify
+# as well as when starting from a fresh volume while mysql starts a recovery
+# process.
+execute "increase mysqld init script timeout" do
+  command "sed 's/STARTTIMEOUT=30/STARTTIMEOUT=90/' -i /etc/init.d/mysqld"
+end
+
 service "mysql" do
   service_name value_for_platform([ "centos", "redhat", "suse" ] => {"default" => "mysqld"}, "default" => "mysql")
 
