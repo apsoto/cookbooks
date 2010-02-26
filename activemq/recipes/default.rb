@@ -21,8 +21,10 @@ include_recipe "java"
 
 version = node[:activemq][:version]
 mirror = node[:activemq][:mirror]
+activemq_home = "/opt/apache-activemq-#{version}"
+node[:activemq][:home] = activemq_home
 
-unless File.exists?("/opt/apache-activemq-#{version}/bin/activemq")
+unless File.exists?("#{activemq_home}/bin/activemq")
   remote_file "/tmp/apache-activemq-#{version}-bin.tar.gz" do
     source "#{mirror}/apache/activemq/apache-activemq/#{version}/apache-activemq-#{version}-bin.tar.gz"
     mode "0644"
@@ -33,10 +35,38 @@ unless File.exists?("/opt/apache-activemq-#{version}/bin/activemq")
   end
 end
 
-file "/opt/apache-activemq-#{version}/bin/activemq" do
+file "#{activemq_home}/bin/activemq" do
   owner "root"
   group "root"
   mode "0755"
 end
 
-runit_service "activemq"
+if platform?("ubuntu", "debian")
+  runit_service "activemq"
+elsif platform?("redhat", "centos")
+  # not quite right if running on non x86 architectures
+  arch = (node[:kernel][:machine] == "x86_64") ? "x86-64" : "x86-32"
+
+  # symlink the initd script provided in the distro
+  link "/etc/init.d/activemq" do
+    to "#{activemq_home}/bin/linux-#{arch}/activemq"
+  end
+
+  # symlink so the default wrapper.conf can find the native wrapper library
+  link "#{activemq_home}/bin/linux" do
+    to "#{activemq_home}/bin/linux-#{arch}"
+  end
+
+  # publish default pidfile location
+  node[:activemq][:pidfile] = "#{activemq_home}/bin/linux/ActiveMQ.pid"
+
+  template "#{activemq_home}/bin/linux/wrapper.conf" do
+    source "wrapper.conf.erb"
+    mode 0644
+  end
+
+  service "activemq" do
+    supports  :start => true, :stop => true, :restart => true, :status => true 
+    action [:enable, :start]
+  end
+end
