@@ -22,6 +22,7 @@ include_recipe "java"
 version = node[:activemq][:version]
 mirror = node[:activemq][:mirror]
 activemq_home = "/opt/apache-activemq-#{version}"
+# publish install location so you can drop in your own activemq.xml in your own recipes
 node[:activemq][:home] = activemq_home
 
 unless File.exists?("#{activemq_home}/bin/activemq")
@@ -44,6 +45,11 @@ end
 if platform?("ubuntu", "debian")
   runit_service "activemq"
 elsif platform?("redhat", "centos")
+  service "activemq" do
+    supports  :start => true, :stop => true, :restart => true, :status => true 
+    action [:enable, :start]
+  end
+
   # not quite right if running on non x86 architectures
   arch = (node[:kernel][:machine] == "x86_64") ? "x86-64" : "x86-32"
 
@@ -57,16 +63,16 @@ elsif platform?("redhat", "centos")
     to "#{activemq_home}/bin/linux-#{arch}"
   end
 
-  # publish default pidfile location
-  node[:activemq][:pidfile] = "#{activemq_home}/bin/linux/ActiveMQ.pid"
+  # symlink the wrapper's pidfile location into /var/run
+  link "/var/run/activemq.pid" do
+    to "#{activemq_home}/bin/linux/ActiveMQ.pid"
+  end
 
   template "#{activemq_home}/bin/linux/wrapper.conf" do
     source "wrapper.conf.erb"
     mode 0644
+    variables(:pidfile => "/var/run/activemq.pid")
+    notifies :restart, resources(:service => "activemq")
   end
 
-  service "activemq" do
-    supports  :start => true, :stop => true, :restart => true, :status => true 
-    action [:enable, :start]
-  end
 end
