@@ -45,17 +45,17 @@ end
 if platform?("ubuntu", "debian")
   runit_service "activemq"
 elsif platform?("redhat", "centos")
-  service "activemq" do
-    supports  :start => true, :stop => true, :restart => true, :status => true 
-    action [:enable, :start]
-  end
-
   # not quite right if running on non x86 architectures
   arch = (node[:kernel][:machine] == "x86_64") ? "x86-64" : "x86-32"
 
   # symlink the initd script provided in the distro
   link "/etc/init.d/activemq" do
     to "#{activemq_home}/bin/linux-#{arch}/activemq"
+  end
+
+  service "activemq" do
+    supports  :start => true, :stop => true, :restart => true, :status => true 
+    action [:enable, :start]
   end
 
   # symlink so the default wrapper.conf can find the native wrapper library
