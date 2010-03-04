@@ -66,6 +66,7 @@ elsif platform?("redhat", "centos")
   # symlink the wrapper's pidfile location into /var/run
   link "/var/run/activemq.pid" do
     to "#{activemq_home}/bin/linux/ActiveMQ.pid"
+    not_if "test -f /var/run/activemq.pid"
   end
 
   template "#{activemq_home}/bin/linux/wrapper.conf" do
