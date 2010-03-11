@@ -1,0 +1,38 @@
+{
+  "attributes": {
+
+  },
+  "recommendations": {
+
+  },
+  "maintainer_email": "channels-operator@tacitknowledge.com",
+  "recipes": {
+    "collectd": ""
+  },
+  "suggestions": {
+
+  },
+  "name": "collectd",
+  "license": "Apache 2.0",
+  "version": "0.1.0",
+  "conflicting": {
+
+  },
+  "description": "Installs\/Configures collectd",
+  "providing": {
+    "collectd": [
+
+    ]
+  },
+  "replacing": {
+
+  },
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES: \n\n= USAGE:\n\n",
+  "dependencies": {
+
+  },
+  "platforms": {
+
+  },
+  "maintainer": "Channels.com"
+}
