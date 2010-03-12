@@ -5,7 +5,7 @@
   "recommendations": {
 
   },
-  "maintainer_email": "channels-operator@tacitknowledge.com",
+  "maintainer_email": "apsoto AT gmail DOT com",
   "recipes": {
     "collectd": ""
   },
@@ -34,5 +34,5 @@
   "platforms": {
 
   },
-  "maintainer": "Channels.com"
+  "maintainer": "Alex Soto"
 }
