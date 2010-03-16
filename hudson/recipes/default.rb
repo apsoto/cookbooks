@@ -31,8 +31,14 @@ if platform?("centos", "redhat", "fedora")
 	end
 
 	package "hudson"
-	
+
 	service "hudson" do
 		supports [:restart]
 	end
+
+  template "/etc/sysconfig/hudson" do
+    source "hudson_sysconfig.erb"
+    notifies :restart, resources(:service => "hudson")
+  end
+	
 end
