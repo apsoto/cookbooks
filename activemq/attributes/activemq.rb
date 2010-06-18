@@ -20,3 +20,4 @@
 set_unless[:activemq][:mirror]  = "http://mirrors.ibiblio.org/pub/mirrors"
 set_unless[:activemq][:version] = "5.3.0"
 set_unless[:activemq][:wrapper][:max_memory] = "512"
+set_unless[:activemq][:wrapper][:useDedicatedTaskRunner] = "true"
