@@ -21,7 +21,13 @@ package "memcached" do
   action :upgrade
 end
 
-package "libmemcache-dev" do
+if platform?("centos","redhat")
+  package_name = "memcached-devel"
+else
+  package_name = "libmemcache-dev"
+end
+
+package package_name do
   action :upgrade
 end
 

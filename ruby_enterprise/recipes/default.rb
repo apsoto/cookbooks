@@ -25,7 +25,13 @@
 
 include_recipe "build-essential"
 
-%w{ libssl-dev libreadline5-dev }.each do |pkg|
+if platform?("centos","redhat")
+  packages = %w{ openssl-devel readline-devel}
+else
+  packages = %w{ libssl-dev libreadline5-dev }
+end
+
+packages.each do |pkg|
   package pkg
 end
 
