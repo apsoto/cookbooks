@@ -39,6 +39,7 @@ extra_packages = case node[:platform]
       ruby-irb
       ruby-rdoc
       ruby-mode
+      ruby-static
     }
   end
 
